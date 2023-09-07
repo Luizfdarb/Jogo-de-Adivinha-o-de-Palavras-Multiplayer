@@ -12,16 +12,26 @@ const io = new Server(server);
 app.use(express.static(path.join(__dirname, 'public')));
 
 let players = []
+let secretWord = "Amarelo"
 
 io.on('connection', (socket) => {
+
     socket.on('search_player', (msg) => {
         console.log(msg);
-        console.log(players);
         players.push(msg)
+
+        if (players.length === 2) {
+            io.emit('start_game', players)
+        }
     })
 
-    socket.on('start_game', (msg) => {
-        console.log(msg);
+    socket.on('guess', (msg) => {
+        const {guess, name} = msg
+
+        if (guess.toLowerCase() === secretWord.toLowerCase()) {
+            io.emit('correct_guess', name)
+            players = []
+        }
     })
 })
 
