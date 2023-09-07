@@ -12,8 +12,12 @@ Este é um projeto de um jogo de adivinhação de palavras em rede, onde dois jo
 - O jogo continua até que um jogador adivinhe corretamente ou desista.
 
 ## 🚀 Como Executar
-
-1. Execute o servidor em um terminal:
+1. Instale as dependências
+```bash
+npm install
+```
+2. Execute o servidor em um terminal:
 
 ```bash
-python server.py
+npm start
+```
