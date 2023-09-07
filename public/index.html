@@ -5,6 +5,58 @@
     <title>Title</title>
 </head>
 <body>
-<p>Opaaaaaaaaaa</p>
+<h1>Jogo de adivinhação de palavras</h1>
+<div>
+    <p id="user">Você</p>
+    <p id="opponent">Oponente</p>
+</div>
+
+<p>Seu chute foi:
+<p id="guess_tittle">Chute</p> </p>
+
+<div>
+    <label for="name" id="name_label">Digite seu nome</label>
+    <input type="text" placeholder="Nome" id="name">
+</div>
+
+<button id="search_player">Procurar jogador</button>
+<img id="loading_indicator" src="loading.gif" alt="loading" width="20" height="20">
+
+
+<div id="game">
+
+</div>
 </body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+
+<script src="socket.io/socket.io.js"></script>
+<script>
+
+    $(document).ready(function () {
+        $("#game").hide();
+        $("#loading_indicator").hide()
+    })
+
+    const socket = io();
+    $("#search_player").click(function () {
+        $("#loading_indicator").show()
+        let name = $("#name").val()
+
+        if (name === "") {
+            alert("Digite seu nome")
+            return
+        }
+
+        socket.emit('search_player', name);
+
+        $("#user").text(name)
+    })
+
+</script>
 </html>

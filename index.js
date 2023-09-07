@@ -11,6 +11,20 @@ const io = new Server(server);
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+let players = []
+
+io.on('connection', (socket) => {
+    socket.on('search_player', (msg) => {
+        console.log(msg);
+        console.log(players);
+        players.push(msg)
+    })
+
+    socket.on('start_game', (msg) => {
+        console.log(msg);
+    })
+})
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 })
