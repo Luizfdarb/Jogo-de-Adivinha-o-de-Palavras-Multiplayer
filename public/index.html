@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Jogo de Adivinhação de Palavras</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body class="container pt-6">
 <div class="row align-items-center justify-content-center my-4">
@@ -64,7 +65,8 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="disconectModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="disconectModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -74,7 +76,9 @@
                         Infelizmente seu oponente se desconectou :(
                     </div>
                     <div class="modal-footer">
-                        <button id="close_modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button id="close_modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -89,7 +93,9 @@
                     </div>
                     <div class="modal-body" id="winModalBody"></div>
                     <div class="modal-footer">
-                        <button id="close_win_modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                        <button id="close_win_modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Fechar
+                        </button>
                     </div>
                 </div>
             </div>
@@ -97,9 +103,17 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 <script src="socket.io/socket.io.js"></script>
 <script>
 
@@ -161,20 +175,13 @@
 
             if (whoIsPlaying === $("#name").val()) {
                 enable_guess()
-            }else{
+            } else {
                 disable_guess()
             }
-        })
-            const {tip, players, gameId} = data;
-            hide_welcome();
-
-            $("#opponent").text("Oponente: " + players.filter(n => n !== $("#name").val()));
-            $("#tips").append(`<li class="list-group-item">${($("#tips").children().length + 1) + " - " + tip}</li>`);
-            show_game();
 
             let timeLeft = 60; // 1 minuto em segundos
 
-            timer = setInterval(function() {
+            timer = setInterval(function () {
                 if (timeLeft <= 0) {
                     clearInterval(timer);
                     socket.emit('time_up', {gameId: gameId});
@@ -183,8 +190,8 @@
                     $("#timer").text(`Tempo restante: ${timeLeft} segundos`);
                 }
             }, 1000);
-        });
-  
+        })
+
         socket.on("game_started", function (msg) {
             alert("O jogo já começou, aguarde os players terminarem.")
         })
@@ -202,12 +209,39 @@
             $("#tips").append(`<li class="list-group-item">${($("#tips").children().length + 1) + " - " + tip}</li>`)
         })
 
-        window.addEventListener('beforeunload', function() {
-            socket.emit('disconnect', { user: $("#name").val() });
+        window.addEventListener('beforeunload', function () {
+            socket.emit('disconnect', {user: $("#name").val()})
         });
 
         socket.on('user_disconnected', function (data) {
             console.log("Usuário desconectou")
+            $("#disconectModal").modal('show')
+        })
+
+        socket.on('invalid_user', function (data) {
+            alert("Você não tem permissão para jogar, espere o jogo terminar")
+            location.reload()
+        })
+
+        socket.on('game_over', function (data) {
+            const {player, word} = data
+            let message = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}`
+
+            $("#winModal").modal('show')
+            $("#winModalBody").text(message)
+        })
+
+        socket.on('turn', function (data) {
+            const {whoIsPlaying} = data
+            console.log(whoIsPlaying)
+            if (whoIsPlaying === $("#name").val()) {
+                enable_guess()
+            } else {
+                disable_guess()
+            }
+        })
+
+        socket.on('user_disconnected', function (data) {
             $("#disconectModal").modal('show')
         })
 
@@ -219,7 +253,7 @@
 
         socket.on('game_over', function (data) {
             const {player, word} = data
-            let message  = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}`
+            let message = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}`
 
             $("#winModal").modal('show')
             $("#winModalBody").text(message)
@@ -230,60 +264,53 @@
             console.log(whoIsPlaying)
             if (whoIsPlaying === $("#name").val()) {
                 enable_guess()
-            }else{
+            } else {
                 disable_guess()
             }
         })
+
+        $("#search_player").click(function () {
+            let name = $("#name").val()
+            if (name === "") {
+                alert("Digite seu nome")
+                return
+            }
+
+            $("#loading_indicator").show()
+
+
+            socket.emit('search_player', name);
+
+            $("#user").text("Você: " + name)
+        })
+
+
+        $("#submit_guess").click(function () {
+            let guess = $("#guess").val()
+            $("#guess_tittle").text(guess)
+            socket.emit('guess', {guess: guess, name: $("#name").val()})
+            let attempts = parseInt($("#attempts").text())
+            $("#attempts").text(attempts + 1)
+        })
+
+        $("#close_modal").on('click', function () {
+            $("#exampleModal").modal('hide')
+            location.reload()
+        })
+
+        $("#exampleModal").on('hidden.bs.modal', function () {
+            location.reload()
+        })
+
+        $("#close_win_modal").on('click', function () {
+            $("#winModal").modal('hide')
+            location.reload()
+        })
+
+        $("#winModal").on('hidden.bs.modal', function () {
+            location.reload()
+        })
     })
 
-            $("#disconectModal").modal('show');
-        });
-
-        socket.on('invalid_user', function (data) {
-            alert("Você não tem permissão para jogar, espere o jogo terminar");
-            location.reload();
-        });
-    });
-    $("#search_player").click(function () {
-        let name = $("#name").val()
-        if (name === "") {
-            alert("Digite seu nome")
-            return
-        }
-
-        $("#loading_indicator").show()
-
-
-        socket.emit('search_player', name);
-
-        $("#user").text("Você: " + name)
-    })
-
-
-    $("#submit_guess").click(function () {
-        let guess = $("#guess").val()
-        $("#guess_tittle").text(guess)
-        socket.emit('guess', {guess: guess, name: $("#name").val()})
-        let attempts = parseInt($("#attempts").text())
-        $("#attempts").text(attempts + 1)
-    })
-
-    $("#close_modal").on('click', function () {
-        $("#exampleModal").modal('hide')
-        location.reload()
-    })
-
-    $("#exampleModal").on('hidden.bs.modal', function () {
-        location.reload()
-    })
-
-    $("#close_win_modal").on('click', function () {
-        $("#winModal").modal('hide')
-        location.reload()
-    })
-
-    $("#winModal").on('hidden.bs.modal', function () {
-        location.reload()
-    })
 </script>
 </html>
