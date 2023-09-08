@@ -36,7 +36,7 @@
 <div id="game">
     <div class="row">
         <div class="col">
-            <b>Tentativas:</b>
+            <b>Tentativas(max 6):</b>
             <p id="attempts">0</p>
 
             <b>Seu palpite foi:</b>
@@ -48,6 +48,8 @@
             </div>
 
             <button id="submit_guess" class="btn btn-primary w-100">Enviar palpite</button>
+
+            <div id="information">Aguarde o turno do oponente acabar</div>
         </div>
 
         <div class="col">
@@ -123,16 +125,36 @@
         $("#loading_indicator").hide()
     }
 
+    function disable_guess() {
+        $("#guess").prop('disabled', true)
+        $("#guess").val("")
+        $("#submit_guess").prop('disabled', true)
+        $("#information").show()
+
+    }
+
+    function enable_guess() {
+        $("#guess").prop('disabled', false)
+        $("#submit_guess").prop('disabled', false)
+        $("#information").hide()
+    }
+
     $(document).ready(function () {
         hide_game()
 
         socket.on('start_game', function (data) {
-            const {tip, players} = data
+            const {tip, players, whoIsPlaying} = data
             hide_welcome()
 
             $("#opponent").text("Oponente: " + players.filter(n => n !== $("#name").val()))
             $("#tips").append(`<li class="list-group-item">${($("#tips").children().length + 1) + " - " + tip}</li>`)
             show_game()
+
+            if (whoIsPlaying === $("#name").val()) {
+                enable_guess()
+            }else{
+                disable_guess()
+            }
         })
 
         socket.on("game_started", function (msg) {
@@ -157,7 +179,8 @@
         });
 
         socket.on('user_disconnected', function (data) {
-            $("#exampleModal").modal('show')
+            console.log("Usuário desconectou")
+            $("#disconectModal").modal('show')
         })
 
         socket.on('invalid_user', function (data) {
@@ -172,6 +195,16 @@
 
             $("#winModal").modal('show')
             $("#winModalBody").text(message)
+        })
+
+        socket.on('turn', function (data) {
+            const {whoIsPlaying} = data
+            console.log(whoIsPlaying)
+            if (whoIsPlaying === $("#name").val()) {
+                enable_guess()
+            }else{
+                disable_guess()
+            }
         })
     })
 
