@@ -36,6 +36,9 @@
 <div id="game">
     <div class="row">
         <div class="col">
+            <b>Score</b>
+            <p id="score">0</p>
+
             <b>Tentativas(max 6):</b>
             <p id="attempts">0</p>
 
@@ -148,29 +151,44 @@
         $("#information").hide()
     }
 
-    function disable_guess() {
-        $("#guess").prop('disabled', true)
-        $("#guess").val("")
-        $("#submit_guess").prop('disabled', true)
-        $("#information").show()
-
-    }
-
-    function enable_guess() {
-        $("#guess").prop('disabled', false)
-        $("#submit_guess").prop('disabled', false)
-        $("#information").hide()
-    }
-
     $(document).ready(function () {
         hide_game();
+
+        socket.on("reset_game", function (data) {
+            const {tip, players, whoIsPlaying} = data
+            hide_welcome()
+
+            $("#tips").empty()
+            $("#attempts").text(0)
+            $("#guess_tittle").text("")
+
+            $("#tips").append(`<li class="list-group-item">${($("#tips").children().length + 1) + " - " + tip}</li>`)
+
+            const score = players.filter(n => n.player === $("#name").val())[0].score
+
+            $("#score").text(score)
+
+            show_game()
+
+            if (whoIsPlaying === $("#name").val()) {
+                enable_guess()
+            } else {
+                disable_guess()
+            }
+
+        })
 
         socket.on('start_game', function (data) {
             const {tip, players, whoIsPlaying} = data
             hide_welcome()
 
-            $("#opponent").text("Oponente: " + players.filter(n => n !== $("#name").val()))
+            $("#opponent").text("Oponente: " + players.filter(n => n.player !== $("#name").val())[0].player)
             $("#tips").append(`<li class="list-group-item">${($("#tips").children().length + 1) + " - " + tip}</li>`)
+
+            const score = players.filter(n => n.player === $("#name").val())[0].score
+
+            $("#score").text(score)
+
             show_game()
 
             if (whoIsPlaying === $("#name").val()) {
@@ -198,7 +216,7 @@
 
         socket.on('correct_guess', function (data) {
             $("#winModal").modal('show')
-            $("#winModalBody").text("O jogador " + data.player + " acertou a palavra, que era: " + data.guess)
+            $("#winModalBody").text("O jogador " + data.player + " acertou a palavra, que era: " + data.guess + ". O jogo foi reiniciado.")
         })
 
         socket.on('tip', function (data) {
@@ -225,7 +243,7 @@
 
         socket.on('game_over', function (data) {
             const {player, word} = data
-            let message = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}`
+            let message = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}` + ". O jogo foi reiniciado."
 
             $("#winModal").modal('show')
             $("#winModalBody").text(message)
@@ -298,17 +316,17 @@
             location.reload()
         })
 
-        $("#exampleModal").on('hidden.bs.modal', function () {
+        $("#disconectModal").on('hidden.bs.modal', function () {
             location.reload()
         })
 
         $("#close_win_modal").on('click', function () {
             $("#winModal").modal('hide')
-            location.reload()
+            //location.reload()
         })
 
         $("#winModal").on('hidden.bs.modal', function () {
-            location.reload()
+            //location.reload()
         })
     })
 
