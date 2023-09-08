@@ -40,6 +40,12 @@
     <p>Seu chute foi:
     <p id="guess_tittle">Chute</p> </p>
 
+    <p>Dicas</p>
+
+    <div id="tips">
+
+    </div>
+
     <label for="guess">Palpite da palavra</label>
     <input id="guess" type="text" placeholder="Seu chute">
     <button id="submit_guess">Enviar palpite</button>
@@ -85,14 +91,26 @@
 
 
         socket.on('start_game', function (data) {
+            const {tip, players} = data
             hide_welcome()
-            $("#opponent").text(data)
+            $("#opponent").text(players.map(p => p.name).filter(n => n !== $("#name").val()))
+            $("#tips").append(`<p>${tip}</p>`)
             show_game()
         })
 
         socket.on('correct_guess', function (data) {
             alert(`${data} acertou! O jogo foi resetado`)
             reset_page()
+        })
+
+        socket.on('tip', function (data) {
+            console.log(data)
+            const {tip} = data
+            if (tip === null)
+                return
+
+            console.log(tip)
+            $("#tips").append(`<p>${tip}</p>`)
         })
     })
 
