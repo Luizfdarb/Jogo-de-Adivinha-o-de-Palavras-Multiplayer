@@ -17,6 +17,12 @@ let secretWord = ""
 const game = new Game()
 let gameStarted = false
 
+function resetGame() {
+    players = []
+    secretWord = ""
+    gameStarted = false
+}
+
 io.on('connection', (socket) => {
 
     socket.on('search_player', (msg) => {
@@ -58,11 +64,14 @@ io.on('connection', (socket) => {
 
         const player = players.find(player => player.player === name)
 
+        if (player.attempts + 1 === 7) {
+            io.emit('game_over', {player: player.player, word: secretWord})
+            resetGame()
+        }
+
         if (game.guessedIt(secretWord, guess)) {
             io.emit('correct_guess', {player: player.player, guess: guess})
-            players = []
-            secretWord = ""
-            gameStarted = false
+            resetGame()
         }
 
         player.attempts++
@@ -90,9 +99,7 @@ io.on('connection', (socket) => {
             return
         }
         io.emit('user_disconnected', `${message} desconectou`)
-        players = []
-        secretWord = ""
-        gameStarted = false
+        resetGame()
     })
 })
 

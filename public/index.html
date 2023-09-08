@@ -36,6 +36,9 @@
 <div id="game">
     <div class="row">
         <div class="col">
+            <b>Tentativas:</b>
+            <p id="attempts">0</p>
+
             <b>Seu palpite foi:</b>
             <p id="guess_tittle">Chute</p>
 
@@ -162,6 +165,14 @@
 
             location.reload()
         })
+
+        socket.on('game_over', function (data) {
+            const {player, word} = data
+            let message  = "O jogo acabou, o jogador " + player + ` esgotou as tentativas. \n Você ${player !== $("#name").val() ? "ganhou" : "perdeu"}. A palavra era: ${word}`
+
+            $("#winModal").modal('show')
+            $("#winModalBody").text(message)
+        })
     })
 
 
@@ -185,6 +196,8 @@
         let guess = $("#guess").val()
         $("#guess_tittle").text(guess)
         socket.emit('guess', {guess: guess, name: $("#name").val()})
+        let attempts = parseInt($("#attempts").text())
+        $("#attempts").text(attempts + 1)
     })
 
     $("#close_modal").on('click', function () {
