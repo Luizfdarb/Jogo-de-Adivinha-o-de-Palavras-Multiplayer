@@ -19,9 +19,36 @@ let gameStarted = false
 let whoIsPlaying = 0
 
 function resetGame() {
+    gameStarted = true
+    whoIsPlaying = Math.floor(Math.random() * 2)
+
+    const {palavra, dicas} = game.getWord()
+    secretWord = palavra
+    const {tip, remaningTips} = game.getTip(dicas)
+
+    players = players.map(player => {
+        player.attempts = 0
+        player.tips = remaningTips
+        return player
+    })
+
+    whoIsPlaying = Math.floor(Math.random() * 2)
+
+    io.emit('reset_game', {
+        tip: tip,
+        players: players.map(player => {
+            return {player: player.player, score: player.score}
+        }),
+        whoIsPlaying: players[whoIsPlaying].player
+    })
+}
+
+function resetSession() {
     players = []
     secretWord = ""
     gameStarted = false
+    whoIsPlaying = 0
+
 }
 
 io.on('connection', (socket) => {
@@ -37,7 +64,7 @@ io.on('connection', (socket) => {
             return
         }
 
-        players.push({player: msg, attempts: 0, tips : []})
+        players.push({player: msg, attempts: 0, tips: [], score: 0})
 
         if (players.length === 2) {
             gameStarted = true
@@ -53,7 +80,13 @@ io.on('connection', (socket) => {
 
             whoIsPlaying = Math.floor(Math.random() * 2)
 
-            io.emit('start_game', {tip: tip, players: players.map(player => player.player), whoIsPlaying: players[whoIsPlaying].player})
+            io.emit('start_game', {
+                tip: tip,
+                players: players.map(player => {
+                    return {player: player.player, score: player.score}
+                }),
+                whoIsPlaying: players[whoIsPlaying].player
+            })
         }
     })
 
@@ -69,6 +102,13 @@ io.on('connection', (socket) => {
 
         if (player.attempts + 1 === 7) {
             io.emit('game_over', {player: player.player, word: secretWord})
+            players = players.map(playerTemp => {
+                if (playerTemp.player === player.player) {
+                    return player
+                }
+                playerTemp.score++
+                return playerTemp
+            })
             resetGame()
         }
 
@@ -76,7 +116,15 @@ io.on('connection', (socket) => {
         io.emit('turn', {whoIsPlaying: players[whoIsPlaying].player})
 
         if (game.guessedIt(secretWord, guess)) {
+            player.score++
+            players = players.map(playerTemp => {
+                if (playerTemp.player === player.player) {
+                    return player
+                }
+                return playerTemp
+            })
             io.emit('correct_guess', {player: player.player, guess: guess})
+
             resetGame()
         }
 
@@ -106,7 +154,7 @@ io.on('connection', (socket) => {
             return
         }
         io.emit('user_disconnected', `${message} desconectou`)
-        resetGame()
+        resetSession()
     })
 })
 
