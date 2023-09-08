@@ -22,7 +22,6 @@ npm install
 npm start
 ```
 3. Abra duas janelas distintas em seu navegador no endereço:
-4. 
 ```bash
 http://localhost:3000
 ```
