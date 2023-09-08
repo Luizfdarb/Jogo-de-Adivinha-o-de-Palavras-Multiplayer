@@ -134,11 +134,24 @@
         $("#information").hide()
     }
 
+    function disable_guess() {
+        $("#guess").prop('disabled', true)
+        $("#guess").val("")
+        $("#submit_guess").prop('disabled', true)
+        $("#information").show()
+
+    }
+
+    function enable_guess() {
+        $("#guess").prop('disabled', false)
+        $("#submit_guess").prop('disabled', false)
+        $("#information").hide()
+    }
+
     $(document).ready(function () {
         hide_game();
 
         socket.on('start_game', function (data) {
-<<<<<<< master
             const {tip, players, whoIsPlaying} = data
             hide_welcome()
 
@@ -152,7 +165,6 @@
                 disable_guess()
             }
         })
-=======
             const {tip, players, gameId} = data;
             hide_welcome();
 
@@ -172,8 +184,7 @@
                 }
             }, 1000);
         });
->>>>>>> master
-
+  
         socket.on("game_started", function (msg) {
             alert("O jogo já começou, aguarde os players terminarem.")
         })
@@ -196,7 +207,6 @@
         });
 
         socket.on('user_disconnected', function (data) {
-<<<<<<< master
             console.log("Usuário desconectou")
             $("#disconectModal").modal('show')
         })
@@ -226,7 +236,6 @@
         })
     })
 
-=======
             $("#disconectModal").modal('show');
         });
 
@@ -235,8 +244,6 @@
             location.reload();
         });
     });
->>>>>>> master
-
     $("#search_player").click(function () {
         let name = $("#name").val()
         if (name === "") {
