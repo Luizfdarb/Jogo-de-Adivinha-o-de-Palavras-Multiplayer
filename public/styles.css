@@ -1,0 +1,44 @@
+body {
+    color: white;
+    background-color: black;
+    font-family: "Press Start 2P", monospace;
+    font-size: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+    position: relative;
+  }
+  
+  body::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: repeating-linear-gradient(#0D122B, #0D122B 2px, #565B73 2px, #565B73 4px);
+    opacity: 0.21;
+    z-index: 100;
+    content: "";
+    pointer-events: none;
+  }
+#game{
+    color: rgb(247, 246, 246);
+}
+
+.audio-container {
+    background-color: #000;
+    color: white;
+    font-family: "Press Start 2P", monospace;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #333;
+    padding: 20px;
+    border: 2px solid #555;
+    border-radius: 10px;
+}
