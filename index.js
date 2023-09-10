@@ -26,6 +26,8 @@ function resetGame() {
     secretWord = palavra
     const {tip, remaningTips} = game.getTip(dicas)
 
+    console.log(palavra)
+
     players = players.map(player => {
         player.attempts = 0
         player.tips = remaningTips

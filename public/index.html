@@ -51,12 +51,11 @@
             <p id="score">0</p>
         </div>
         <div class="col">
-            <b>Tentativas (max 6):</b>
-            <p id="attempts">0</p>
+
         </div>
         <div class="col">
-            <b>Tempo Restante</b>
-            <p id="timer">60 segundos</p>
+            <b>Tentativas (max 6):</b>
+            <p id="attempts">0</p>
         </div>
     </div>
 
@@ -129,7 +128,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel2">Aviso</h5>
                     </div>
-                    <div class="modal-body" id="winModalBody"></div>
+                    <div class="modal-body" id="winModalBody" style="color: black;"></div>
                     <div class="modal-footer">
                         <button id="close_win_modal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                             Fechar
@@ -157,7 +156,6 @@
 <script>
 
     const socket = io();
-    let timer;
 
     function hide_welcome() {
         $("#welcome").hide()
@@ -232,18 +230,6 @@
             } else {
                 disable_guess()
             }
-
-            let timeLeft = 60; // 1 minuto em segundos
-
-            timer = setInterval(function () {
-                if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    socket.emit('time_up', {gameId: gameId});
-                } else {
-                    timeLeft--;
-                    $("#timer").text(`Tempo restante: ${timeLeft} segundos`);
-                }
-            }, 1000);
         })
 
         socket.on("game_started", function (msg) {
@@ -360,14 +346,7 @@
             $("#winModal").modal('hide')
             //location.reload()
         })
-
-        $("#winModal").on('hidden.bs.modal', function () {
-            //location.reload()
-        })
     })
-
-
-      
 </script>
 </html>
 
