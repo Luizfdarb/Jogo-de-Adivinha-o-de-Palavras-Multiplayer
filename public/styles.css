@@ -6,7 +6,6 @@ body {
     text-align: center;
     text-transform: uppercase;
     margin: 0;
-    position: relative;
   }
   
   body::before {
@@ -42,3 +41,63 @@ body {
     border: 2px solid #555;
     border-radius: 10px;
 }
+
+.load {
+  animation: load 800ms 500ms backwards;
+}
+
+@keyframes load {
+  0% {
+    filter: blur(2px) hue-rotate(-150deg);
+  }
+}
+
+h1 {
+
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+.logo {
+  font-size: 50px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+}
+
+.street {
+  color: #ff4500; /* Cor para "Street" */
+}
+
+.fight {
+  color: #f00; /* Cor para "Fight" */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1 {
+  margin: 0;
+}
+
+
+.title h1 {
+  background: -webkit-linear-gradient(rgb(255, 18, 18) 30%, rgb(255, 215, 38));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.title-top {
+  transform: skew(-10deg) rotate(-10deg) translateX(-2rem);
+}
+
+.title-bottom {
+  transform: skew(-10deg) rotate(-10deg) translateX(1rem);
+}
+
+
